@@ -1,0 +1,22 @@
+exclude src/simpleMPExample.py
+exclude src/ubigraph.py
+exclude src/__init__.py
+
+recursive-include Documentation/html/ *
+
+include exampleScripts/getpyGPickleInfo.py
+include exampleScripts/plotCommunities.py
+include exampleScripts/basicClusterHoehnerExampleData.py
+include exampleScripts/advancedClusterHoehnerExampleData.py
+include exampleScripts/test_pyGCluster.py
+include exampleScripts/simpleExpressionMap.py
+
+include exampleFiles/Hoehner_dataset.csv
+include exampleFiles/syntheticDataset.csv
+include exampleFiles/Hoehner_example_MERGED_pyGCluster.pkl
+
+
+include Documentation/pyGCluster.pdf
+
+include COPYING.txt
+

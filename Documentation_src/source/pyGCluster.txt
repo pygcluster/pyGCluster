@@ -1,0 +1,11 @@
+.. pyGCluster:
+
+.. default-domain:: py
+
+#################
+Module pyGCluster
+#################
+
+
+.. automodule:: pyGCluster
+   :members:
