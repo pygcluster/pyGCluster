@@ -27,7 +27,10 @@ tar xvfj *.bz2
 cd ..
 
 # Copying packages to Website
-if [ ! -d "$Test" ]; then
-echo 'Please clone pyGCluster website repository with command git clone https://github.com/pygcluster/pygcluster.github.io.git Website'    
-#cp dist/pyGCluster*.zip     Website/dist/pyGCluster.zip
-#cp dist/pyGCluster*.tar.bz2 Website/dist/pyGCluster.tar.bz2
+if [ -d 'Website' ]; then
+    echo 'Folder Website exists...'
+else
+    echo 'Please clone pyGCluster website repository with command git clone https://github.com/pygcluster/pygcluster.github.io.git Website'      
+fi    
+cp dist/pyGCluster*.zip     Website/dist/pyGCluster.zip
+cp dist/pyGCluster*.tar.bz2 Website/dist/pyGCluster.tar.bz2
