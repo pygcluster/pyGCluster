@@ -1,0 +1,4 @@
+*.pyc
+Documentation_src/build
+Documentation/
+Website
