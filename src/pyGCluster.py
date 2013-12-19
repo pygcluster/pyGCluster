@@ -555,7 +555,10 @@ class Cluster(dict):
                 conditions |= set( data[ identifier ].keys() )
             conditions = sorted( list( conditions ) )
         if identifiers == None:
-            identifiers = sorted( list( data.keys() ))
+            if type(data) == type(OrderedDict()):
+                identifiers = list( data.keys() )
+            else:    
+                identifiers = sorted(list( data.keys() ))
         #
         # Updating self[ 'Additional labels' ]
         #
@@ -1086,7 +1089,7 @@ class Cluster(dict):
                     data[ identifier ] = {}
                     for condition in self[ 'Conditions' ]:
                         data[ identifier ][ condition ] = self[ 'Data' ][ identifier ][ condition ]
-                    additional_labels[ identifier ] = [ '{0:3.4f}'.format( self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ][ index ] ) ]
+                    additional_labels[ identifier ] = [ '{0:4.2f}'.format( self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ][ index ] ) ]
                 else:
                     identifiers.append( '_placeholder_' )
             hm_filename = '{0}-{1}.svg'.format( self[ 'Communities' ][ name ][ 'cluster ID' ], name[ 1 ] )
