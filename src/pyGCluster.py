@@ -47,7 +47,7 @@ import bisect
 import multiprocessing
 import itertools
 if sys.version_info[0] == 3: # if python3k, cPickle is implemented in pickle-library
-    print('since fastcluster runs only under python2k, please re-call pyGCluster with python2k.')
+    print('Note: fastcluster runs only using python2.x! Might worth be using it ;)')
     import pickle
 else: # 2k, explicitely import cPickle
     import cPickle as pickle
@@ -2123,7 +2123,7 @@ class Cluster(dict):
             self.plot_nodetree( 'AHCofClusters_binaryTree_iteration{0}.dot'.format(level) )
             update_communities( level = level, clusters_combined_into_communities = clusters_combined_into_communities )
             community_snapshot = sorted( clusters_combined_into_communities )
-            min_overlap                        += increasing_min_overlap
+            min_overlap       += increasing_min_overlap
             level += 1
         return
 
@@ -2752,7 +2752,7 @@ class Cluster(dict):
            - :py:func:`pyGCluster.Cluster.draw_community_expression_maps`
            - :py:func:`pyGCluster.Cluster.draw_expression_profiles`
 
-        For a complete list of possible 
+        For a complete list of possible
         Distance matrix calculations
         see: http://docs.scipy.org/doc/scipy/reference/spatial.distance.html
         or Linkage methods
@@ -2800,11 +2800,11 @@ class Cluster(dict):
         Output/Plotting:
 
         :param pickle_filename: Filename of the output pickle object
-        :type pickle_filename: string 
+        :type pickle_filename: string
         :param top_X_clusters: Plot of the top X clusters in the sorted list (by freq) of clusters having a maximum cluster frequency of at least threshold_4_the_lowest_max_freq (clusterfreq-plot is still sorted by size).
         :type top_X_clusters: int
         :param threshold_4_the_lowest_max_freq: ]0, 1[ Clusters must have a maximum frequency of at least threshold_4_the_lowest_max_freq to appear in the plot.
-        :type threshold_4_the_lowest_max_freq: float  
+        :type threshold_4_the_lowest_max_freq: float
         :param min_value_4_expression_map: lower bound for color coding of values in the expression map. Remember that log2-values are expected, i.e. this value should be < 0!
         :type min_value_4_expression_map: float
         :param max_value_4_expression_map: upper bound for color coding of values in the expression map.
@@ -2816,7 +2816,7 @@ class Cluster(dict):
         :param legend_filename: file name for legend .svg will be added if required.
         :type legend_filename: string
         :param box_style: the way the relative standard deviation is visualized in the expression map. Currently supported are 'modern', 'fusion' or 'classic'.
-        :type box_style: string  
+        :type box_style: string
         :param starting_min_overlap: ]0, 1[ minimum required relative overlap between clusters so that they are assigned the same community. The relative overlap is defined as the size of the overlap between two clusters, divided by the size of the larger cluster.
         :type starting_min_overlap: float
         :param increasing_min_overlap: defines the increase of the required overlap between communities
