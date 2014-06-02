@@ -180,7 +180,7 @@ def resampling_multiprocess(
         digits = [] # modified ref: http://stackoverflow.com/questions/2267362/convert-integer-to-a-string-in-a-given-numeric-base-in-python
         while index:
             digits.append( alphabet[ index % baseX ] )
-            index /= baseX
+            index = round( index / baseX )
         digits.reverse()
         converted_index = ''.join( digits )
         index2baseX[ old_index ] = converted_index
@@ -557,7 +557,7 @@ class Cluster(dict):
         if identifiers == None:
             if type(data) == type(OrderedDict()):
                 identifiers = list( data.keys() )
-            else:    
+            else:
                 identifiers = sorted(list( data.keys() ))
         #
         # Updating self[ 'Additional labels' ]
