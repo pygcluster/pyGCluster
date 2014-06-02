@@ -274,7 +274,7 @@ def resampling_multiprocess(
     min_count = int( min_cluster_freq_2_retain * iterations * 0.5 )
     clusterIDs2retain = set( numpy.nonzero( tmpstruct_clustercount_monitor[ 'Cluster counts' ] >= min_count )[ 0 ] )
     cluster_counts_list = []
-    for cluster, clusterID in tmpstruct_clustercount_monitor[ 'Cluster 2 clusterID' ].iteritems():
+    for cluster, clusterID in tmpstruct_clustercount_monitor[ 'Cluster 2 clusterID' ].items():
         if clusterID in clusterIDs2retain:
             counts = tmpstruct_clustercount_monitor[ 'Cluster counts' ][ clusterID ]
             cluster_counts_list.append( (cluster, counts) )
