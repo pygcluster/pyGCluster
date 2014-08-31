@@ -46,8 +46,7 @@ import codecs
 import bisect
 import multiprocessing
 import itertools
-if sys.version_info[0] == 3: # if python3k, cPickle is implemented in pickle-library
-    print('Note: fastcluster runs only using python2.x! Might worth be using it ;)')
+if sys.version_info[0] == 3:
     import pickle
 else: # 2k, explicitely import cPickle
     import cPickle as pickle
@@ -1056,7 +1055,7 @@ class Cluster(dict):
         )
         return
 
-    def draw_community_expression_maps(self, min_value_4_expression_map = None, max_value_4_expression_map = None, color_gradient = '1337', box_style = 'classic'):
+    def draw_community_expression_maps(self, min_value_4_expression_map = None, max_value_4_expression_map = None, color_gradient = 'default', box_style = 'classic', conditions= None, additional_labels=None):
         '''
         Plots the expression map for each community showing its object composition.
 
@@ -1070,9 +1069,13 @@ class Cluster(dict):
         :type color_gradient: string
         :param box_style: name of box style used in SVG. Currently supported are classic, modern, fusion.
         :type box_style: string
+        :param additional_labels: dict with additional labels, k = identified and v = list of additional labels.
+        :type additional_labels: dict
 
         :rtype: none
         '''
+        if conditions == None:
+            conditions = self[ 'Conditions' ]
         max_level = max( [ name[ 1 ] for name in self[ 'Communities' ] ] )
         for cluster in self._get_levelX_clusters( level = max_level ):
             name = ( cluster, max_level )
@@ -1080,7 +1083,7 @@ class Cluster(dict):
                 continue
             identifiers = []
             data = {}
-            additional_labels = {}
+            internal_additional_labels = {}
             for index in self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ]:
                 identifier = None
                 if index > 0:
@@ -1089,15 +1092,20 @@ class Cluster(dict):
                     data[ identifier ] = {}
                     for condition in self[ 'Conditions' ]:
                         data[ identifier ][ condition ] = self[ 'Data' ][ identifier ][ condition ]
-                    additional_labels[ identifier ] = [ '{0:4.2f}'.format( self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ][ index ] ) ]
+                    internal_additional_labels[ identifier ] = [ '{0:4.2f}'.format( self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ][ index ] ) ]
                 else:
                     identifiers.append( '_placeholder_' )
+            if additional_labels != None:
+                for k in internal_additional_labels.keys():
+                    if k in additional_labels.keys():
+                        internal_additional_labels[ k ] += additional_labels[ k ]
+
             hm_filename = '{0}-{1}.svg'.format( self[ 'Communities' ][ name ][ 'cluster ID' ], name[ 1 ] )
             self.draw_expression_map(
                 identifiers       = identifiers,
                 data              = data,
-                conditions        = self[ 'Conditions' ],
-                additional_labels = additional_labels,
+                conditions        = conditions,
+                additional_labels = internal_additional_labels,
                 min_value_4_expression_map              = min_value_4_expression_map,
                 max_value_4_expression_map              = max_value_4_expression_map,
                 expression_map_filename = hm_filename,
