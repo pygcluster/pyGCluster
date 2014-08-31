@@ -4,10 +4,10 @@
 Testscript to demonstrate functionality of pyGCluster
 
 A synthetic dataset is used to check the correct installation of pyGCluster.
-This dataset cotains 10 ratios (Gene 0-9) which were randonmly sampled between 
-39.5 and 40.5 in 0.1 steps with a low standard deviation (randonmly sampled 
-between 0.1 and 1) and 90 ratios (Gene 10-99) which were randonmly sampled 
-between 3 and 7 in 0.1 steps with a high standard deviation (randonmly sampled 
+This dataset contains 10 ratios (Gene 0-9) which were randomly sampled between 
+39.5 and 40.5 in 0.1 steps with a low standard deviation (randomly sampled 
+between 0.1 and 1) and 90 ratios (Gene 10-99) which were randomly sampled 
+between 3 and 7 in 0.1 steps with a high standard deviation (randomly sampled 
 between 0.1 and 5)
 
 5000 iterations are performed and the presence of the most frequent cluster is
