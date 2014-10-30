@@ -46,10 +46,14 @@ import codecs
 import bisect
 import multiprocessing
 import itertools
+# import unicode
 if sys.version_info[0] == 3:
     import pickle
+    def unicode(x, errors='replace'):
+        return x
 else: # 2k, explicitely import cPickle
     import cPickle as pickle
+
 
 def yield_noisejected_dataset(data, iterations):
     '''
@@ -660,6 +664,7 @@ class Cluster(dict):
                     ),
                     file = svgOut
             )
+
         for rowPos, identifier in enumerate( identifiers ):
             adjustedRowPos = rowPos - number_of_separators
             if identifier == '_placeholder_':
@@ -672,6 +677,8 @@ class Cluster(dict):
                 )
                 shapeDict['x1_separator'] = shapeDict['x0']
                 shapeDict['x2_separator'] = shapeDict['x0'] + ( self[ 'Heat map'][ 'Params' ]['rBox width']  * len( conditions ))
+                
+
                 print( unicode('''
                             <line x1="{x1_separator}" y1="{y0}" x2="{x2_separator}" y2="{y0}" style="stroke:rgb{0};stroke-width:{1}"/>
                             '''.format(
@@ -683,13 +690,14 @@ class Cluster(dict):
                         ),
                     file = svgOut
                 )
+
                 number_of_separators += 1
             else:
                 expProf[ identifier ] = [ [] ]
                 for conPos, condition in enumerate( conditions ):
                     try:
                         ratio, std = data[ identifier ][ condition ]
-                        insertion_point = len( expProf[ identifier ][ -1 ] ) / 2
+                        insertion_point = int(len( expProf[ identifier ][ -1 ] ) / 2)
                         # first entry in profile
                         expProf[ identifier ][ -1 ].insert( insertion_point,  ratio - std )
                         expProf[ identifier ][ -1 ].insert( insertion_point,  ratio + std )
@@ -697,7 +705,6 @@ class Cluster(dict):
                     except:
                         ratio, std = None, None
                         expProf[ identifier ].append( [] )
-
                     shapeDict = self._HM_calcShapeAndColor(
                                                             x                    = conPos,
                                                             y                    = adjustedRowPos,
@@ -715,7 +722,6 @@ class Cluster(dict):
                                     ),
                         file = svgOut
                     )
-
                 #
 
                 shapeDict['x_text']           = (conPos + 1  ) * self[ 'Heat map'][ 'Params' ]['rBox width'] + self[ 'Heat map'][ 'Params' ]['left border'] + self[ 'Heat map'][ 'Params' ]['text spacing']
