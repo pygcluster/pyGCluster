@@ -1,11 +1,11 @@
 #!/usr/bin/env python2.7
 '''
-Plot communities of a given pyGCluster pkl file. All output will be 
+Plot communities of a given pyGCluster pkl file. All output will be
 directed into the folder, wehre the input data is located
 
-The top_X_clusters option can be used to use the top X clusters for community 
+The top_X_clusters option can be used to use the top X clusters for community
 determination.
-The threshold_4_the_lowest_max_freq option define the threshold for the maximum 
+The threshold_4_the_lowest_max_freq option define the threshold for the maximum
 frequency of the clusters which should be incoporated into the community determination.
 
 Default values are:
@@ -18,7 +18,7 @@ Usage::
 
 optional::
 
-    ./plotCommunities.py <pathTopyGClusterPickle> <threshold_4_the_lowest_max_freq=0.005> 
+    ./plotCommunities.py <pathTopyGClusterPickle> <threshold_4_the_lowest_max_freq=0.005>
     OR <top_X_clusters=100>
 
 
@@ -43,8 +43,8 @@ def main():
     cluster = pyGCluster.Cluster()
     cluster.load(sys.argv[1])
     cluster['Working directory'] = os.path.dirname(sys.argv[1])
-    
     cluster.build_nodemap( min_cluster_size = 4, top_X_clusters = top_X_clusters, threshold_4_the_lowest_max_freq = threshold_4_the_lowest_max_freq )
+    print( cluster.keys() )
     cluster.draw_community_expression_maps( min_value_4_expression_map = -3, max_value_4_expression_map = 3)
     cluster.draw_expression_profiles( min_value_4_expression_map = -3, max_value_4_expression_map = 3 )
 
