@@ -689,7 +689,7 @@ class Cluster(dict):
                 for conPos, condition in enumerate( conditions ):
                     try:
                         ratio, std = data[ identifier ][ condition ]
-                        insertion_point = len( expProf[ identifier ][ -1 ] ) / 2
+                        insertion_point = int( len( expProf[ identifier ][ -1 ] ) / 2 )
                         # first entry in profile
                         expProf[ identifier ][ -1 ].insert( insertion_point,  ratio - std )
                         expProf[ identifier ][ -1 ].insert( insertion_point,  ratio + std )
