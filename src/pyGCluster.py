@@ -1085,6 +1085,7 @@ class Cluster(dict):
             data = {}
             internal_additional_labels = {}
             for index in self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ]:
+                # print( index , self[ 'Communities' ])
                 identifier = None
                 if index > 0:
                     identifier = self[ 'Identifiers' ][ index ]
@@ -1789,7 +1790,7 @@ class Cluster(dict):
         max_counts = numpy.amax( self[ 'Cluster counts' ], axis = 1 ) # get max count for each cluster
         if not top_X_clusters:
             mostfreqIDs = set( numpy.nonzero( max_counts >= topP_count )[ 0 ] )
-            for cluster, clusterID in self[ 'Cluster 2 clusterID' ].iteritems():
+            for cluster, clusterID in self[ 'Cluster 2 clusterID' ].items():
                 if len( cluster ) >= min_cluster_size:
                     if clusterID in mostfreqIDs:
                         most_freq.append( cluster )
@@ -3014,9 +3015,14 @@ class Cluster(dict):
         '''
         _list = sorted( _list )
         length = len( _list )
-        if not length % 2:
-            return ( _list[ length // 2 ] + _list[ length // 2 - 1 ] ) / 2.0
-        return _list[ length / 2 ]
+        value = None
+        if length % 2 == 0:
+            # even !
+            value = ( _list[ length // 2 ] + _list[ length // 2 - 1 ] ) / 2.0
+        else:
+            # odd !
+            value = _list[ length // 2 ]
+        return value
 
     def _print(self, *args, **kwargs):
         '''
