@@ -32,7 +32,7 @@ import pyGCluster
 
 def main():
     threshold_4_the_lowest_max_freq = 0.005
-    top_X_clusters = 0
+    top_X_clusters = None
     for n in sys.argv[1:]:
         if "threshold_4_the_lowest_max_freq" in n:
             threshold_4_the_lowest_max_freq = float(n.split("=")[1])
@@ -43,10 +43,21 @@ def main():
     cluster = pyGCluster.Cluster()
     cluster.load(sys.argv[1])
     cluster['Working directory'] = os.path.dirname(sys.argv[1])
-    cluster.build_nodemap( min_cluster_size = 4, top_X_clusters = top_X_clusters, threshold_4_the_lowest_max_freq = threshold_4_the_lowest_max_freq )
-    print( cluster.keys() )
-    cluster.draw_community_expression_maps( min_value_4_expression_map = -3, max_value_4_expression_map = 3)
-    cluster.draw_expression_profiles( min_value_4_expression_map = -3, max_value_4_expression_map = 3 )
+    cluster.build_nodemap(
+        min_cluster_size = 4,
+        top_X_clusters = top_X_clusters,
+        threshold_4_the_lowest_max_freq = threshold_4_the_lowest_max_freq
+    )
+    cluster.info()
+    # print( cluster.keys() )
+    cluster.draw_community_expression_maps(
+        min_value_4_expression_map = -3,
+        max_value_4_expression_map = 3
+    )
+    cluster.draw_expression_profiles(
+        min_value_4_expression_map = -3,
+        max_value_4_expression_map = 3
+    )
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
