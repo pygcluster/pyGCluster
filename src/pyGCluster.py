@@ -55,7 +55,7 @@ if sys.version_info[0] == 3:
     input = input
 else: # 2k, explicitely import cPickle
     import cPickle as pickle
-    input = input
+    input = raw_input
 
 def yield_noisejected_dataset(data, iterations):
     '''
