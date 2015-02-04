@@ -46,12 +46,16 @@ import codecs
 import bisect
 import multiprocessing
 import itertools
+
+
 if sys.version_info[0] == 3:
     import pickle
     def unicode(x, errors=None):
         return x
+    input = input
 else: # 2k, explicitely import cPickle
     import cPickle as pickle
+    input = input
 
 def yield_noisejected_dataset(data, iterations):
     '''
@@ -159,15 +163,15 @@ def resampling_multiprocess(
         except ImportError:
             print('You do require either "fastcluster" or "scipy"!')
 
-    if DataQ == None or data == None:
+    if DataQ is None or data is None:
         print( '[ ERROR ] need a Data-Queune and a data object! Returning ...' )
         return
-    if alphabet == None:
+    if alphabet is None:
         alphabet = create_default_alphabet()
     assert ',' not in alphabet, '[ ERROR ] the alphabet must not contain a comma (",")!'
-    if dlc == None:
+    if dlc is None:
         dlc = [ 'euclidean-average' ]  # NOTE maybe better have all as default ! :)
-    if function_2_generate_noise_injected_datasets == None:
+    if function_2_generate_noise_injected_datasets is None:
         function_2_generate_noise_injected_datasets = yield_noisejected_dataset
     n_objects   = len( data.keys() )
     n_dlc       = len( dlc )
@@ -408,7 +412,7 @@ class Cluster(dict):
     '''
     def __init__(self, data = None, working_directory = None, verbosity_level = 1):
         self.delete_resampling_results() # initializes important variables
-        if working_directory == None:
+        if working_directory is None:
             working_directory = os.getcwd()
         self[ 'Working directory' ]             = working_directory
         self[ 'for IO skip clusters bigger than' ]   = 100
@@ -548,14 +552,14 @@ class Cluster(dict):
         '''
 
 
-        if additional_labels == None:
+        if additional_labels is None:
             additional_labels = {}
-        if conditions == None:
+        if conditions is None:
             conditions = set()
             for identifier in data.keys():
                 conditions |= set( data[ identifier ].keys() )
             conditions = sorted( list( conditions ) )
-        if identifiers == None:
+        if identifiers is None:
             if type(data) == type(OrderedDict()):
                 identifiers = list( data.keys() )
             else:
@@ -578,14 +582,14 @@ class Cluster(dict):
         #
         # determine range id needed
         #
-        if self[ 'Heat map'][ 'Params' ][ 'min' ] == None or self[ 'Heat map'][ 'Params' ][ 'max' ] == None:
+        if self[ 'Heat map'][ 'Params' ][ 'min' ] is None or self[ 'Heat map'][ 'Params' ][ 'max' ] is None:
             allValues = []
             for identifier in data.keys():
                 for condition in data[ identifier ].keys():
                     allValues.append( data[ identifier ][ condition][0] )
-            if self[ 'Heat map' ][ 'Params' ][ 'min' ] == None:
+            if self[ 'Heat map' ][ 'Params' ][ 'min' ] is None:
                 self[ 'Heat map' ][ 'Params' ][ 'min' ] = math.floor( min( allValues ) )
-            if self[ 'Heat map' ][ 'Params' ][ 'max' ] == None:
+            if self[ 'Heat map' ][ 'Params' ][ 'max' ] is None:
                 self[ 'Heat map' ][ 'Params' ][ 'max' ] = math.ceil( max( allValues ) )
         #
         # setting default color gradient if match is found
@@ -621,7 +625,14 @@ class Cluster(dict):
         expProf = {}
         assert type(identifiers) == type( [] ) , 'require a list of identifiers!'
         # self._draw_expression_map_legend()
-        svgOut               = codecs.open( os.path.join( self[ 'Working directory' ], self[ 'Heat map' ][ 'Params' ]['heat map filename'] ), 'w', 'utf-8')
+        svgOut               = codecs.open(
+            os.path.join(
+                self[ 'Working directory' ],
+                self[ 'Heat map' ][ 'Params' ]['heat map filename']
+            ),
+            'w',
+            'utf-8'
+        )
         svgWidth             = len( conditions ) * self[ 'Heat map'][ 'Params' ][ 'rBox width' ] + self[ 'Heat map'][ 'Params' ]['left border'] + self[ 'Heat map'][ 'Params' ]['text width']
         svgHeight            = len( identifiers ) * self[ 'Heat map'][ 'Params' ][ 'rBox height' ] + self[ 'Heat map'][ 'Params' ]['top border']
         number_of_separators = 0
@@ -749,7 +760,14 @@ class Cluster(dict):
         #
         # Drawing legend
         #
-        svgLegendOut         = codecs.open( os.path.join( self[ 'Working directory' ], self[ 'Heat map' ][ 'Params' ]['legend filename'] ), 'w', 'utf-8')
+        svgLegendOut         = codecs.open(
+            os.path.join(
+                self[ 'Working directory' ],
+                self[ 'Heat map' ][ 'Params' ]['legend filename']
+            ),
+            'w',
+            'utf-8'
+        )
         svgWidth             = len( conditions ) * self[ 'Heat map'][ 'Params' ][ 'rBox width' ] + self[ 'Heat map'][ 'Params' ]['left border'] + self[ 'Heat map'][ 'Params' ]['text width']
         svgHeight            = 11 * self[ 'Heat map'][ 'Params' ][ 'rBox height' ] + self[ 'Heat map'][ 'Params' ]['top border']
         number_of_separators = 0
@@ -861,8 +879,8 @@ class Cluster(dict):
         shapeDict['width']                             = self[ 'Heat map'][ 'Params' ]['rBox width']
         shapeDict['height']                            = self[ 'Heat map'][ 'Params' ]['rBox height']
 
-        if std != None or (std == None and ratio == None): # or std != 0.0:
-            if std == None:
+        if std != None or (std is None and ratio is None): # or std != 0.0:
+            if std is None:
                 # ratio and sd for this entry are None, this will lead to white box
                 stdAsPercentOfRatio = 0
 
@@ -946,7 +964,7 @@ class Cluster(dict):
         :rtype: none
         '''
         # check if function call was valid:
-        if clusterID == None and cluster == None:
+        if clusterID is None and cluster is None:
             self._print( '[ ERROR ] call function "draw_expression_map_for_cluster" with either a clusterID or a cluster.', verbosity_level = 0 )
             return
         elif clusterID != None and cluster != None:
@@ -960,7 +978,7 @@ class Cluster(dict):
             cluster = c
 
         # determine hm_filename:
-        if filename == None:
+        if filename is None:
             filename = '{0}.svg'.format( self[ 'Cluster 2 clusterID' ][ cluster ] )
         hm_filename = os.path.join( self[ 'Working directory' ], filename )
         # prepare for drawing of expression map ...
@@ -1076,7 +1094,7 @@ class Cluster(dict):
 
         :rtype: none
         '''
-        if conditions == None:
+        if conditions is None:
             conditions = self[ 'Conditions' ]
         max_level = max( [ name[ 1 ] for name in self[ 'Communities' ] ] )
         for cluster in self._get_levelX_clusters( level = max_level ):
@@ -1086,11 +1104,22 @@ class Cluster(dict):
             identifiers = []
             data = {}
             internal_additional_labels = {}
-            for index in self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ]:
-                # print( index , self[ 'Communities' ][ name ])
+            for index in self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ].keys():
                 identifier = None
                 if index > 0:
+                    # try:
                     identifier = self[ 'Identifiers' ][ index ]
+                    # except:
+                    #     print( index , self[ 'Communities' ][ name ])
+                    #     print( list( self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ].keys() ) )
+                    #     print('Tried to access Identifier # {0} and failed'.format( index ) )
+                    #     print('Total length of Identifiers is {0}'.format( len( self[ 'Identifiers' ] )))
+                    #     # for index in self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ].keys():
+                    #     #     print( index )
+                    #     # print( len( self[ 'Data' ] ) )
+                    #     # exit(1)
+                    #     # identifier = 'WTF?'
+                    #     continue
                     identifiers.append( identifier )
                     data[ identifier ] = {}
                     for condition in self[ 'Conditions' ]:
@@ -1172,8 +1201,11 @@ class Cluster(dict):
         assert self[ 'Data' ] == other[ 'Data' ], '[ ERROR ] pyGCluster-instances with different clustered data cannot be merged!'
         assert sorted( self[ 'Distance-linkage combinations' ] ) == sorted( other[ 'Distance-linkage combinations' ] ), '[ ERROR ] pyGCluster-instances with a different distance-linkage combinations cannot be merged!'
         self[ 'Iterations' ] += other[ 'Iterations' ]
-        if self[ 'Cluster counts' ] == None:
-            self[ 'Cluster counts' ] = numpy.zeros( ( 10 ** 4, len( self[ 'Distance-linkage combinations' ] ) ), dtype = numpy.uint32 )
+        if self[ 'Cluster counts' ] is None:
+            self[ 'Cluster counts' ] = numpy.zeros(
+                ( 10 ** 4, len( self[ 'Distance-linkage combinations' ] ) ),
+                dtype = numpy.uint32
+            )
         otherDLC2selfDLC = {}
         for other_dlc_index, dlc in enumerate( other[ 'Distance-linkage combinations' ] ):
             self_dlc_index = self[ 'Distance-linkage combinations' ].index( dlc )
@@ -1262,9 +1294,9 @@ class Cluster(dict):
         import scipy.cluster.hierarchy as sch
         import scipy.spatial.distance as ssd
 
-        if function_2_generate_noise_injected_datasets == None:
+        if function_2_generate_noise_injected_datasets is None:
             function_2_generate_noise_injected_datasets = yield_noisejected_dataset
-        if alphabet == None:
+        if alphabet is None:
             alphabet = string.printable
         alphabet = alphabet.replace( ',', '' )
 
@@ -1476,7 +1508,7 @@ class Cluster(dict):
                 self._print( '(enter "0" to stop resampling.)', verbosity_level = 1 )
                 self._print( '(enter "-1" to resample until iter_max (= {0}) is reached.)'.format( iter_max ), verbosity_level = 1 )
                 while True:
-                    answer = raw_input( 'Enter a number ...' )
+                    answer = input( 'Enter a number ...' )
                     try:
                         iter_to_continue = int( answer )
                         break
@@ -2029,7 +2061,7 @@ class Cluster(dict):
 
             # recursive function 2 find communities:
             def get_communities( node , community_list = None ):
-                if community_list == None:
+                if community_list is None:
                     community_list = []
                 for child in nodemap[ node ][ 'children' ]:
                     if len( set( child ) ) == self[ 'Root size' ]:
@@ -2040,7 +2072,7 @@ class Cluster(dict):
 
             # get root_node = top node of the tree:
             for node in nodemap:
-                if nodemap[ node ][ 'parent' ] == None:
+                if nodemap[ node ][ 'parent' ] is None:
                     root_node = node
                     break
             community_list = get_communities( node = root_node, community_list = None )
@@ -2096,7 +2128,11 @@ class Cluster(dict):
                                 self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ][ placeholder ] = -99
                                 placeholder_added = True
                             self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ][ index ] = obCoFreq
-                max_freq = max( self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ].values() + [0.0,] )
+                max_freq = max(
+                    list(
+                        self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ].values()
+                    ) + [0.0]
+                )
                 self[ 'Communities' ][ name ][ 'highest obCoFreq' ] = max_freq
             return
 
@@ -2150,7 +2186,7 @@ class Cluster(dict):
 
         :rtype: list
         '''
-        if children == None:
+        if children is None:
             children = []
         if len( self[ 'Nodemap - binary tree' ][ node ][ 'children' ] ) > 0:
             for child in self[ 'Nodemap - binary tree' ][ node ][ 'children' ]:
@@ -2171,7 +2207,7 @@ class Cluster(dict):
 
         :rtype: list
         '''
-        if children == None:
+        if children is None:
             children = []
         if len( self[ 'Communities' ][ parent_name ][ 'children' ] ) > 0:
             parent, level = parent_name
@@ -2509,7 +2545,7 @@ class Cluster(dict):
 
         :rtype: tuple
         '''
-        if identifier == None and clusterID == None and cluster == None:
+        if identifier is None and clusterID is None and cluster is None:
             self._print( 'invalid call of function "frequencies": neither "identifier", "clusterID" nor "cluster" were given.\n\treturning None ...',
                 file = sys.stderr,
                 verbosity_level = 0
@@ -2588,7 +2624,7 @@ class Cluster(dict):
         FONT_SIZE = 10
         y_offset = 20
         MIN_V, MAX_V = min_value_4_expression_map, max_value_4_expression_map
-        if min_value_4_expression_map == None or max_value_4_expression_map == None:
+        if min_value_4_expression_map is None or max_value_4_expression_map is None:
             # determine min and max for y-axis:
             _yAxisMinMax = set()
             for identifier in self[ 'Data' ]:
@@ -2596,12 +2632,12 @@ class Cluster(dict):
                     mean, sd = self[ 'Data' ][ identifier ][ condition ]
                     _yAxisMinMax.add( round( mean + sd, 2 ) )
                     _yAxisMinMax.add( round( mean - sd, 2 ) )
-            if min_value_4_expression_map == None:
+            if min_value_4_expression_map is None:
                 MIN_V = int( math.ceil( min( _yAxisMinMax ) ) ) - 1
-            if max_value_4_expression_map == None:
+            if max_value_4_expression_map is None:
                 MAX_V = int( math.ceil( max( _yAxisMinMax ) ) )
             # give y-axis the same amount in positive and negative direction (e.g. from - 10 to 10):
-            if min_value_4_expression_map == None and max_value_4_expression_map == None: # but only if no value is given, otherwise it's probably user-chosen!
+            if min_value_4_expression_map is None and max_value_4_expression_map is None: # but only if no value is given, otherwise it's probably user-chosen!
                 if MAX_V > abs( MIN_V ):
                     MIN_V = MAX_V * -1
                 else:
@@ -2636,7 +2672,11 @@ class Cluster(dict):
             SDs = numpy.zeros( shape )
             identifiers = []
             for row_index, identifier_index in enumerate( cluster ):
-                identifier = self[ 'Identifiers' ][ identifier_index ]
+                try:
+                    identifier = self[ 'Identifiers' ][ identifier_index ]
+                except:
+                    print(identifier_index, len( self['Identifiers']))
+                    exit(1)
                 for col_index, condition in enumerate( self[ 'Data' ][ identifier ] ):
                     mean, sd = self[ 'Data' ][ identifier ][ condition ]
                     ratios[ row_index ][ col_index ] = mean
@@ -2851,9 +2891,9 @@ class Cluster(dict):
         '''
         if working_directory != None:
             self[ 'Working directory' ] = working_directory
-        if distances == None:
+        if distances is None:
             distances = [ 'euclidean', 'correlation' ]
-        if linkages == None:
+        if linkages is None:
             linkages = [ 'complete', 'average', 'weighted', 'centroid', 'median', 'ward' ]
         if additional_labels != None:
             self[ 'Additional Labels' ] = additional_labels
