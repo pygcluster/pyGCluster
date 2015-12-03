@@ -46,13 +46,24 @@ import codecs
 import bisect
 import multiprocessing
 import itertools
+<<<<<<< HEAD
 # import unicode
 if sys.version_info[0] == 3:
     import pickle
     def unicode(x, errors='replace'):
         return x
+=======
+
+
+if sys.version_info[0] == 3:
+    import pickle
+    def unicode(x, errors=None):
+        return x
+    input = input
+>>>>>>> f7615ab1611158fa098ec915b9d91edad9b5547c
 else: # 2k, explicitely import cPickle
     import cPickle as pickle
+    input = raw_input
 
 
 def yield_noisejected_dataset(data, iterations):
@@ -161,15 +172,15 @@ def resampling_multiprocess(
         except ImportError:
             print('You do require either "fastcluster" or "scipy"!')
 
-    if DataQ == None or data == None:
+    if DataQ is None or data is None:
         print( '[ ERROR ] need a Data-Queune and a data object! Returning ...' )
         return
-    if alphabet == None:
+    if alphabet is None:
         alphabet = create_default_alphabet()
     assert ',' not in alphabet, '[ ERROR ] the alphabet must not contain a comma (",")!'
-    if dlc == None:
+    if dlc is None:
         dlc = [ 'euclidean-average' ]  # NOTE maybe better have all as default ! :)
-    if function_2_generate_noise_injected_datasets == None:
+    if function_2_generate_noise_injected_datasets is None:
         function_2_generate_noise_injected_datasets = yield_noisejected_dataset
     n_objects   = len( data.keys() )
     n_dlc       = len( dlc )
@@ -410,7 +421,7 @@ class Cluster(dict):
     '''
     def __init__(self, data = None, working_directory = None, verbosity_level = 1):
         self.delete_resampling_results() # initializes important variables
-        if working_directory == None:
+        if working_directory is None:
             working_directory = os.getcwd()
         self[ 'Working directory' ]             = working_directory
         self[ 'for IO skip clusters bigger than' ]   = 100
@@ -489,7 +500,7 @@ class Cluster(dict):
             for identifier in data.keys():
                 for condition in data[ identifier ].keys():
                     conditions.add(condition)
-            for identifier in data.keys():
+            for identifier in list(data.keys()):
                 # discard entry if any condition is missing:
                 missing_conditions = conditions - set( data[ identifier ].keys() )
                 if len(missing_conditions) > 0:
@@ -550,14 +561,14 @@ class Cluster(dict):
         '''
 
 
-        if additional_labels == None:
+        if additional_labels is None:
             additional_labels = {}
-        if conditions == None:
+        if conditions is None:
             conditions = set()
             for identifier in data.keys():
                 conditions |= set( data[ identifier ].keys() )
             conditions = sorted( list( conditions ) )
-        if identifiers == None:
+        if identifiers is None:
             if type(data) == type(OrderedDict()):
                 identifiers = list( data.keys() )
             else:
@@ -580,14 +591,14 @@ class Cluster(dict):
         #
         # determine range id needed
         #
-        if self[ 'Heat map'][ 'Params' ][ 'min' ] == None or self[ 'Heat map'][ 'Params' ][ 'max' ] == None:
+        if self[ 'Heat map'][ 'Params' ][ 'min' ] is None or self[ 'Heat map'][ 'Params' ][ 'max' ] is None:
             allValues = []
             for identifier in data.keys():
                 for condition in data[ identifier ].keys():
                     allValues.append( data[ identifier ][ condition][0] )
-            if self[ 'Heat map' ][ 'Params' ][ 'min' ] == None:
+            if self[ 'Heat map' ][ 'Params' ][ 'min' ] is None:
                 self[ 'Heat map' ][ 'Params' ][ 'min' ] = math.floor( min( allValues ) )
-            if self[ 'Heat map' ][ 'Params' ][ 'max' ] == None:
+            if self[ 'Heat map' ][ 'Params' ][ 'max' ] is None:
                 self[ 'Heat map' ][ 'Params' ][ 'max' ] = math.ceil( max( allValues ) )
         #
         # setting default color gradient if match is found
@@ -623,7 +634,14 @@ class Cluster(dict):
         expProf = {}
         assert type(identifiers) == type( [] ) , 'require a list of identifiers!'
         # self._draw_expression_map_legend()
-        svgOut               = codecs.open( os.path.join( self[ 'Working directory' ], self[ 'Heat map' ][ 'Params' ]['heat map filename'] ), 'w', 'utf-8')
+        svgOut               = codecs.open(
+            os.path.join(
+                self[ 'Working directory' ],
+                self[ 'Heat map' ][ 'Params' ]['heat map filename']
+            ),
+            'w',
+            'utf-8'
+        )
         svgWidth             = len( conditions ) * self[ 'Heat map'][ 'Params' ][ 'rBox width' ] + self[ 'Heat map'][ 'Params' ]['left border'] + self[ 'Heat map'][ 'Params' ]['text width']
         svgHeight            = len( identifiers ) * self[ 'Heat map'][ 'Params' ][ 'rBox height' ] + self[ 'Heat map'][ 'Params' ]['top border']
         number_of_separators = 0
@@ -755,7 +773,14 @@ class Cluster(dict):
         #
         # Drawing legend
         #
-        svgLegendOut         = codecs.open( os.path.join( self[ 'Working directory' ], self[ 'Heat map' ][ 'Params' ]['legend filename'] ), 'w', 'utf-8')
+        svgLegendOut         = codecs.open(
+            os.path.join(
+                self[ 'Working directory' ],
+                self[ 'Heat map' ][ 'Params' ]['legend filename']
+            ),
+            'w',
+            'utf-8'
+        )
         svgWidth             = len( conditions ) * self[ 'Heat map'][ 'Params' ][ 'rBox width' ] + self[ 'Heat map'][ 'Params' ]['left border'] + self[ 'Heat map'][ 'Params' ]['text width']
         svgHeight            = 11 * self[ 'Heat map'][ 'Params' ][ 'rBox height' ] + self[ 'Heat map'][ 'Params' ]['top border']
         number_of_separators = 0
@@ -867,8 +892,8 @@ class Cluster(dict):
         shapeDict['width']                             = self[ 'Heat map'][ 'Params' ]['rBox width']
         shapeDict['height']                            = self[ 'Heat map'][ 'Params' ]['rBox height']
 
-        if std != None or (std == None and ratio == None): # or std != 0.0:
-            if std == None:
+        if std != None or (std is None and ratio is None): # or std != 0.0:
+            if std is None:
                 # ratio and sd for this entry are None, this will lead to white box
                 stdAsPercentOfRatio = 0
 
@@ -952,7 +977,7 @@ class Cluster(dict):
         :rtype: none
         '''
         # check if function call was valid:
-        if clusterID == None and cluster == None:
+        if clusterID is None and cluster is None:
             self._print( '[ ERROR ] call function "draw_expression_map_for_cluster" with either a clusterID or a cluster.', verbosity_level = 0 )
             return
         elif clusterID != None and cluster != None:
@@ -960,13 +985,13 @@ class Cluster(dict):
             return
         # if clusterID is given, get the corresponding cluster:
         elif clusterID != None:
-            for c, cID in self[ 'Cluster 2 clusterID' ].iteritems():
+            for c, cID in self[ 'Cluster 2 clusterID' ].items():
                 if cID == clusterID:
                     break
             cluster = c
 
         # determine hm_filename:
-        if filename == None:
+        if filename is None:
             filename = '{0}.svg'.format( self[ 'Cluster 2 clusterID' ][ cluster ] )
         hm_filename = os.path.join( self[ 'Working directory' ], filename )
         # prepare for drawing of expression map ...
@@ -1082,7 +1107,7 @@ class Cluster(dict):
 
         :rtype: none
         '''
-        if conditions == None:
+        if conditions is None:
             conditions = self[ 'Conditions' ]
         max_level = max( [ name[ 1 ] for name in self[ 'Communities' ] ] )
         for cluster in self._get_levelX_clusters( level = max_level ):
@@ -1092,11 +1117,22 @@ class Cluster(dict):
             identifiers = []
             data = {}
             internal_additional_labels = {}
-            for index in self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ]:
-                # print( index , self[ 'Communities' ])
+            for index in self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ].keys():
                 identifier = None
                 if index > 0:
+                    # try:
                     identifier = self[ 'Identifiers' ][ index ]
+                    # except:
+                    #     print( index , self[ 'Communities' ][ name ])
+                    #     print( list( self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ].keys() ) )
+                    #     print('Tried to access Identifier # {0} and failed'.format( index ) )
+                    #     print('Total length of Identifiers is {0}'.format( len( self[ 'Identifiers' ] )))
+                    #     # for index in self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ].keys():
+                    #     #     print( index )
+                    #     # print( len( self[ 'Data' ] ) )
+                    #     # exit(1)
+                    #     # identifier = 'WTF?'
+                    #     continue
                     identifiers.append( identifier )
                     data[ identifier ] = {}
                     for condition in self[ 'Conditions' ]:
@@ -1178,14 +1214,17 @@ class Cluster(dict):
         assert self[ 'Data' ] == other[ 'Data' ], '[ ERROR ] pyGCluster-instances with different clustered data cannot be merged!'
         assert sorted( self[ 'Distance-linkage combinations' ] ) == sorted( other[ 'Distance-linkage combinations' ] ), '[ ERROR ] pyGCluster-instances with a different distance-linkage combinations cannot be merged!'
         self[ 'Iterations' ] += other[ 'Iterations' ]
-        if self[ 'Cluster counts' ] == None:
-            self[ 'Cluster counts' ] = numpy.zeros( ( 10 ** 4, len( self[ 'Distance-linkage combinations' ] ) ), dtype = numpy.uint32 )
+        if self[ 'Cluster counts' ] is None:
+            self[ 'Cluster counts' ] = numpy.zeros(
+                ( 10 ** 4, len( self[ 'Distance-linkage combinations' ] ) ),
+                dtype = numpy.uint32
+            )
         otherDLC2selfDLC = {}
         for other_dlc_index, dlc in enumerate( other[ 'Distance-linkage combinations' ] ):
             self_dlc_index = self[ 'Distance-linkage combinations' ].index( dlc )
             otherDLC2selfDLC[ other_dlc_index ] = self_dlc_index
         # merge clusters from other into self
-        for cluster, other_clusterID in other[ 'Cluster 2 clusterID' ].iteritems():
+        for cluster, other_clusterID in other[ 'Cluster 2 clusterID' ].items():
             if cluster not in self[ 'Cluster 2 clusterID' ]:
                 self[ 'Cluster 2 clusterID' ][ cluster ] = len( self[ 'Cluster 2 clusterID' ] ) # new cluster found, assign index
             self_clusterID = self[ 'Cluster 2 clusterID' ][ cluster ]
@@ -1268,9 +1307,9 @@ class Cluster(dict):
         import scipy.cluster.hierarchy as sch
         import scipy.spatial.distance as ssd
 
-        if function_2_generate_noise_injected_datasets == None:
+        if function_2_generate_noise_injected_datasets is None:
             function_2_generate_noise_injected_datasets = yield_noisejected_dataset
-        if alphabet == None:
+        if alphabet is None:
             alphabet = string.printable
         alphabet = alphabet.replace( ',', '' )
 
@@ -1460,7 +1499,7 @@ class Cluster(dict):
             for ID in IDs2discard:
                 tmpstruct_clustercounts[ 'Cluster counts' ][ ID ][ : ] = 0
             # delete those clusters which were attributed the discarded clusterIDs
-            clusters2discard = [ c for c, cID in tmpstruct_clustercounts[ 'Cluster 2 clusterID' ].iteritems() if cID in IDs2discard ]
+            clusters2discard = [ c for c, cID in tmpstruct_clustercounts[ 'Cluster 2 clusterID' ].items() if cID in IDs2discard ]
             for cluster in clusters2discard:
                 del tmpstruct_clustercounts[ 'Cluster 2 clusterID' ][ cluster ]
                 del cluster
@@ -1482,7 +1521,7 @@ class Cluster(dict):
                 self._print( '(enter "0" to stop resampling.)', verbosity_level = 1 )
                 self._print( '(enter "-1" to resample until iter_max (= {0}) is reached.)'.format( iter_max ), verbosity_level = 1 )
                 while True:
-                    answer = raw_input( 'Enter a number ...' )
+                    answer = input( 'Enter a number ...' )
                     try:
                         iter_to_continue = int( answer )
                         break
@@ -1516,7 +1555,7 @@ class Cluster(dict):
         tmp[ 'Cluster counts' ] = tmpstruct_clustercounts[ 'Cluster counts' ]
         tmp[ 'Distance-linkage combinations' ] = self[ 'Distance-linkage combinations' ]
         tmp[ 'Data' ] = self[ 'Data' ]
-        for cluster, clusterID in tmpstruct_clustercounts[ 'Cluster 2 clusterID' ].iteritems():
+        for cluster, clusterID in tmpstruct_clustercounts[ 'Cluster 2 clusterID' ].items():
             if clusterID in clusterIDs2retain:
                 final_cluster = []
                 # map cluster back to decimal indices:
@@ -1715,7 +1754,7 @@ class Cluster(dict):
         self._print( '... plot of convergence finished. See plot in "{0}".'.format( os.path.join( self[ 'Working directory' ], filename ) ), file = sys.stderr, verbosity_level = 2 )
         return
 
-    def plot_clusterfreqs(self, min_cluster_size = 4, top_X_clusters = 0, threshold_4_the_lowest_max_freq = 0.01):
+    def plot_clusterfreqs(self, min_cluster_size = 4, top_X_clusters = None, threshold_4_the_lowest_max_freq = 0.01):
         '''
         Plot the frequencies of each cluster as a expression map:
         which cluster was found by which distance-linkage combination, and with what frequency?
@@ -1729,9 +1768,6 @@ class Cluster(dict):
         :type threshold_4_the_lowest_max_freq: float
         :param top_X_clusters: Plot of the top X clusters in the sorted list (by freq) of clusters having a maximum cluster frequency of at least threshold_4_the_lowest_max_freq (clusterfreq-plot is still sorted by size).
         :type top_X_clusters: int
-
-        .. note ::
-            if top_X_clusters is set to zero ( 0 ), this filter is switched off (switched off by default).
 
         :rtype: None
         '''
@@ -1764,7 +1800,7 @@ class Cluster(dict):
         self._print( '... clusterfreqs_expressionmap saved as: "{0}"'.format( hm_filename+'.svg' ), verbosity_level = 1 )
         return
 
-    def _get_most_frequent_clusters(self, min_cluster_size = 4, top_X_clusters = 0, threshold_4_the_lowest_max_freq = 0.01):
+    def _get_most_frequent_clusters(self, min_cluster_size = 4, top_X_clusters = None, threshold_4_the_lowest_max_freq = 0.01):
         '''
         Gets the most frequent clusters. Filters either according to a frequency-threshold or gets the top X clusters.
 
@@ -1782,28 +1818,22 @@ class Cluster(dict):
         :param top_X_clusters: get the top X clusters in the sorted list (by freq) of clusters having a maximum cluster frequency of at least threshold_4_the_lowest_max_freq.
         :type top_X_clusters: int
 
-        .. note ::
-           top_X_clusters = 0 means that this filter is switched off (switched off by default).
 
         :rtype: List of the most frequent clusters in ARBITRARY order.
         '''
         import numpy
         threshold_4_the_lowest_max_freq   = float( threshold_4_the_lowest_max_freq )
-        top_X_clusters       = int( top_X_clusters )
-
         topP_count = self[ 'Iterations' ] * threshold_4_the_lowest_max_freq
-
-
         most_freq = []
         max_counts = numpy.amax( self[ 'Cluster counts' ], axis = 1 ) # get max count for each cluster
-        if not top_X_clusters:
+        if top_X_clusters is None:
             mostfreqIDs = set( numpy.nonzero( max_counts >= topP_count )[ 0 ] )
             for cluster, clusterID in self[ 'Cluster 2 clusterID' ].items():
                 if len( cluster ) >= min_cluster_size:
                     if clusterID in mostfreqIDs:
                         most_freq.append( cluster )
         else: # top_X_clusters filter is requested:
-            cID_mask = [ cID for c, cID in self[ 'Cluster 2 clusterID' ].iteritems() if len( c ) < min_cluster_size ]
+            cID_mask = [ cID for c, cID in self[ 'Cluster 2 clusterID' ].items() if len( c ) < min_cluster_size ]
             clusterIDs2retain = []
             for cID, _ in enumerate( max_counts >= topP_count ):
                 if _:
@@ -1811,8 +1841,8 @@ class Cluster(dict):
                         continue
                     clusterIDs2retain.append( ( max_counts[ cID ], cID ) )
             clusterIDs2retain.sort( reverse = True )
-            topX_clusterIDs = set( [ cID for count, cID in clusterIDs2retain[ : top_X_clusters ] ] )
-            for cluster, clusterID in self[ 'Cluster 2 clusterID' ].iteritems():
+            topX_clusterIDs = set( [ cID for count, cID in clusterIDs2retain[ : int(top_X_clusters) ] ] )
+            for cluster, clusterID in self[ 'Cluster 2 clusterID' ].items():
                 if clusterID in topX_clusterIDs:
                     most_freq.append(cluster)
 
@@ -1939,7 +1969,7 @@ class Cluster(dict):
                 cluster_list.append( cluster )
         return sorted( cluster_list )
 
-    def build_nodemap(self, min_cluster_size = 4, top_X_clusters = 0, threshold_4_the_lowest_max_freq = 0.01, starting_min_overlap = 0.1, increasing_min_overlap = 0.05):
+    def build_nodemap(self, min_cluster_size = 4, top_X_clusters = None, threshold_4_the_lowest_max_freq = 0.01, starting_min_overlap = 0.1, increasing_min_overlap = 0.05):
         '''
         Construction of communities from a set of most_frequent_cluster.
         This set is obtained via :py:func:`pyGCluster.Cluster._get_most_frequent_clusters`, to which the first three parameters are passed.
@@ -1968,7 +1998,7 @@ class Cluster(dict):
             ...         # an OrderedDict in which each index is assigned its obCoFreq.
             ...         # Negative indices correspond to "placeholders",
             ...         # which are required for the insertion of black lines into expression maps.
-            ...         # Black lines in expression maps seperate the individual clusters
+            ...         # Black lines in expression maps separate the individual clusters
             ...         # that form a community, sorted by when
             ...         # they were inserted into the community.
             >>> self[ 'Communities' ][ name ][ 'highest obCoFreq' ]
@@ -2044,7 +2074,7 @@ class Cluster(dict):
 
             # recursive function 2 find communities:
             def get_communities( node , community_list = None ):
-                if community_list == None:
+                if community_list is None:
                     community_list = []
                 for child in nodemap[ node ][ 'children' ]:
                     if len( set( child ) ) == self[ 'Root size' ]:
@@ -2055,7 +2085,7 @@ class Cluster(dict):
 
             # get root_node = top node of the tree:
             for node in nodemap:
-                if nodemap[ node ][ 'parent' ] == None:
+                if nodemap[ node ][ 'parent' ] is None:
                     root_node = node
                     break
             community_list = get_communities( node = root_node, community_list = None )
@@ -2079,6 +2109,7 @@ class Cluster(dict):
                     community_obCoFreq2cluster_list.append( ( highest_obCoFreq, cluster ) )
                     community_indices |= set( cluster )
                 community_obCoFreq2cluster_list.sort( reverse = True )
+                # print( level , 'level', community_indices)
                 first_cluster = community_obCoFreq2cluster_list[ 0 ][ 1 ]
                 name = ( tuple( sorted( community_indices ) ), level + 1 )
                 if name in self[ 'Communities' ]:
@@ -2087,6 +2118,8 @@ class Cluster(dict):
                         self[ 'Communities' ][ name ][ 'cluster ID' ] = self[ 'Communities' ][ ( first_cluster, level ) ][ 'cluster ID' ]
                     community_obCoFreq2cluster_list.insert( 0, None ) # assure that the first cluster is also properly inserted
                 else:
+                    # import copy
+                    # print( self[ 'Communities' ][ ( first_cluster, level ) ][ 'index 2 obCoFreq dict' ] )
                     self[ 'Communities' ][ name ] = {}
                     self[ 'Communities' ][ name ][ 'children' ] = [ first_cluster ]
                     self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ] = self[ 'Communities' ][ ( first_cluster, level ) ][ 'index 2 obCoFreq dict' ].copy()
@@ -2099,7 +2132,7 @@ class Cluster(dict):
                     self[ 'Communities' ][ name ][ 'children' ].append( cluster )
                     placeholder_added = False
                     for index in cluster:
-                        obCoFreq = self[ 'Communities' ][ ( cluster, level ) ][ 'index 2 obCoFreq dict' ][ index ]
+                        obCoFreq = self[ 'Communities' ][ ( cluster, level ) ][ 'index 2 obCoFreq dict' ].get( index, 0. )
                         if index in self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ]:
                             self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ][ index ] += obCoFreq
                         else:
@@ -2108,19 +2141,27 @@ class Cluster(dict):
                                 self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ][ placeholder ] = -99
                                 placeholder_added = True
                             self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ][ index ] = obCoFreq
-                max_freq = max( self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ].values() )
+                max_freq = max(
+                    list(
+                        self[ 'Communities' ][ name ][ 'index 2 obCoFreq dict' ].values()
+                    ) + [0.0]
+                )
                 self[ 'Communities' ][ name ][ 'highest obCoFreq' ] = max_freq
             return
 
-        def init_cluster2community0_level():
+        def init_cluster2community0_level(min_cluster_size = None, top_X_clusters = None, threshold_4_the_lowest_max_freq = None):
             most_frequent_clusters = self._get_most_frequent_clusters( min_cluster_size = min_cluster_size, top_X_clusters = top_X_clusters, threshold_4_the_lowest_max_freq = threshold_4_the_lowest_max_freq )
             level = 0
+            maxIndex = 0
             self[ 'Communities' ] = {}
             for cluster in sorted( most_frequent_clusters ):
                 index2obCoFreq = OrderedDict()
                 cFreq, cFreqDict = self.frequencies( cluster = cluster )
-                for index in cluster:
-                    index2obCoFreq[ index ] = cFreq
+                # for index in cluster:
+                #     index2obCoFreq[ index ] = cFreq
+                #     if index > 146:
+                #         print("<")
+                #         exit(1)
                 max_freq = cFreq # max_freq = max( index2obCoFreq.values() ) = cFreq, because the indices are only from a single cluster at level 0
                 name = ( cluster, level )
                 self[ 'Communities' ][ name ]                                           = {}
@@ -2132,7 +2173,7 @@ class Cluster(dict):
             return
 
         min_overlap = starting_min_overlap
-        init_cluster2community0_level()
+        init_cluster2community0_level(min_cluster_size = min_cluster_size, top_X_clusters = top_X_clusters, threshold_4_the_lowest_max_freq = threshold_4_the_lowest_max_freq)
         level              = 0
         community_snapshot = None
         while True:
@@ -2158,7 +2199,7 @@ class Cluster(dict):
 
         :rtype: list
         '''
-        if children == None:
+        if children is None:
             children = []
         if len( self[ 'Nodemap - binary tree' ][ node ][ 'children' ] ) > 0:
             for child in self[ 'Nodemap - binary tree' ][ node ][ 'children' ]:
@@ -2179,7 +2220,7 @@ class Cluster(dict):
 
         :rtype: list
         '''
-        if children == None:
+        if children is None:
             children = []
         if len( self[ 'Communities' ][ parent_name ][ 'children' ] ) > 0:
             parent, level = parent_name
@@ -2517,7 +2558,7 @@ class Cluster(dict):
 
         :rtype: tuple
         '''
-        if identifier == None and clusterID == None and cluster == None:
+        if identifier is None and clusterID is None and cluster is None:
             self._print( 'invalid call of function "frequencies": neither "identifier", "clusterID" nor "cluster" were given.\n\treturning None ...',
                 file = sys.stderr,
                 verbosity_level = 0
@@ -2527,7 +2568,7 @@ class Cluster(dict):
         if identifier != None:
             # search by identifier
             ident_index = self[ 'Identifiers' ].index( identifier )
-            for cluster, clusterID in self[ 'Cluster 2 clusterID' ].iteritems():
+            for cluster, clusterID in self[ 'Cluster 2 clusterID' ].items():
                 if ident_index in cluster:
                     for i, method in enumerate(self[ 'Distance-linkage combinations' ]):
                         freq = self[ 'Cluster counts' ][ clusterID ][ i ] / float( self[ 'Iterations' ] )
@@ -2596,7 +2637,7 @@ class Cluster(dict):
         FONT_SIZE = 10
         y_offset = 20
         MIN_V, MAX_V = min_value_4_expression_map, max_value_4_expression_map
-        if min_value_4_expression_map == None or max_value_4_expression_map == None:
+        if min_value_4_expression_map is None or max_value_4_expression_map is None:
             # determine min and max for y-axis:
             _yAxisMinMax = set()
             for identifier in self[ 'Data' ]:
@@ -2604,12 +2645,12 @@ class Cluster(dict):
                     mean, sd = self[ 'Data' ][ identifier ][ condition ]
                     _yAxisMinMax.add( round( mean + sd, 2 ) )
                     _yAxisMinMax.add( round( mean - sd, 2 ) )
-            if min_value_4_expression_map == None:
+            if min_value_4_expression_map is None:
                 MIN_V = int( math.ceil( min( _yAxisMinMax ) ) ) - 1
-            if max_value_4_expression_map == None:
+            if max_value_4_expression_map is None:
                 MAX_V = int( math.ceil( max( _yAxisMinMax ) ) )
             # give y-axis the same amount in positive and negative direction (e.g. from - 10 to 10):
-            if min_value_4_expression_map == None and max_value_4_expression_map == None: # but only if no value is given, otherwise it's probably user-chosen!
+            if min_value_4_expression_map is None and max_value_4_expression_map is None: # but only if no value is given, otherwise it's probably user-chosen!
                 if MAX_V > abs( MIN_V ):
                     MIN_V = MAX_V * -1
                 else:
@@ -2644,7 +2685,11 @@ class Cluster(dict):
             SDs = numpy.zeros( shape )
             identifiers = []
             for row_index, identifier_index in enumerate( cluster ):
-                identifier = self[ 'Identifiers' ][ identifier_index ]
+                try:
+                    identifier = self[ 'Identifiers' ][ identifier_index ]
+                except:
+                    print(identifier_index, len( self['Identifiers']))
+                    exit(1)
                 for col_index, condition in enumerate( self[ 'Data' ][ identifier ] ):
                     mean, sd = self[ 'Data' ][ identifier ][ condition ]
                     ratios[ row_index ][ col_index ] = mean
@@ -2748,16 +2793,19 @@ class Cluster(dict):
         self._print( '... community expression profile plots saved in "{0}"'.format( self[ 'Working directory' ] ), verbosity_level = 1 )
         return
 
-    def do_it_all(self, working_directory = None,
-                    distances = None, linkages = None, function_2_generate_noise_injected_datasets = None,
+    def do_it_all(
+                    self,
+                    working_directory = None,
+                    distances = None,
+                    linkages = None, function_2_generate_noise_injected_datasets = None,
                     min_cluster_size = 4, alphabet = None, force_plotting = False, min_cluster_freq_2_retain = 0.001,
                     pickle_filename = 'pyGCluster_resampled.pkl', cpus_2_use = None, iter_max = 250000,
                     iter_tol = 0.01 / 100000, iter_step = 5000, iter_top_P = 0.001, iter_window = 50000, iter_till_the_end = False,
-                    top_X_clusters = 0, threshold_4_the_lowest_max_freq = 0.01,
+                    top_X_clusters = None, threshold_4_the_lowest_max_freq = 0.01,
                     starting_min_overlap = 0.1, increasing_min_overlap = 0.05,
-                    color_gradient = '1337', box_style = 'classic',
+                    color_gradient = 'default', box_style = 'classic',
                     min_value_4_expression_map = None, max_value_4_expression_map = None, additional_labels = None
-        ):
+                ):
         '''
         Evokes all necessary functions which constitute the main functionality of pyGCluster.
         This is AHC clustering with noise injection and a variety of DLCs,
@@ -2856,9 +2904,9 @@ class Cluster(dict):
         '''
         if working_directory != None:
             self[ 'Working directory' ] = working_directory
-        if distances == None:
+        if distances is None:
             distances = [ 'euclidean', 'correlation' ]
-        if linkages == None:
+        if linkages is None:
             linkages = [ 'complete', 'average', 'weighted', 'centroid', 'median', 'ward' ]
         if additional_labels != None:
             self[ 'Additional Labels' ] = additional_labels
@@ -2931,7 +2979,7 @@ class Cluster(dict):
             {0:>9} identifiers were used to cluster
             {1:>9} conditions were defined
             {2:>9} linkage - distance def combos were used
-            {3:>9} iterations were peformed
+            {3:>9} iterations were performed
 
             '''.format(
                 len( self[ 'Identifiers' ] ),
@@ -2945,7 +2993,7 @@ class Cluster(dict):
             max_level = max( [ name[1] for name in self[ 'Communities' ] ] )
             communities_top_cluster = self._get_levelX_clusters( level = max_level )
             communities_minus_close2root = [ c for c in  communities_top_cluster if len( c ) < self[ 'for IO skip clusters bigger than' ] ]
-            s = '{3} most_frequent_clusters were combined into {0} communities. {1} of those communities contain more than {2} objects (i.e. are "close to root" communities).'
+            s = '{3} most_frequent_clusters were combined into {0} communities. {1} of those communities contain more than {2} objects \n(i.e. are "close to root" communities).'
             n_communities = len( communities_top_cluster)
             self._print( s.format( n_communities, n_communities - len( communities_minus_close2root ), self[ 'for IO skip clusters bigger than' ], len( self._get_levelX_clusters( level = 0 ) ) ), verbosity_level = 0 )
             self._print( 'See below for the parameters that were used to form communities (function "build_nodemap").', verbosity_level = 0 )
@@ -2959,7 +3007,7 @@ class Cluster(dict):
         for function_name in self[ 'Function parameters' ]:
             self._print( '\t- function {0} was called with ...'.format( function_name ), verbosity_level = 0 )
             for kw, value in sorted( self[ 'Function parameters' ][ function_name ].items() ):
-                self._print( '\t\t- - keyword: "{0}", value: "{1}".'.format( kw, value ), verbosity_level = 0 )
+                self._print( '{0: >45} : {1}'.format( kw, value ), verbosity_level = 0 )
         self._print( '[ INFO ] {0:*^100}'.format( ' info function END ' ), verbosity_level = 0 )
         return
 
