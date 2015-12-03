@@ -15,6 +15,8 @@ CITATION
 
 Please cite us when using pyGCluster for your publications.
 
+Jaeger, D., Barth, J., Niehues, A. & Fufezan, C. pyGCluster, a novel hierarchical clustering approach. Bioinformatics 30, 896–8 (2014).
+
 
 INSTALLATION
 
