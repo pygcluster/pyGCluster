@@ -46,13 +46,6 @@ import codecs
 import bisect
 import multiprocessing
 import itertools
-<<<<<<< HEAD
-# import unicode
-if sys.version_info[0] == 3:
-    import pickle
-    def unicode(x, errors='replace'):
-        return x
-=======
 
 
 if sys.version_info[0] == 3:
@@ -60,7 +53,6 @@ if sys.version_info[0] == 3:
     def unicode(x, errors=None):
         return x
     input = input
->>>>>>> f7615ab1611158fa098ec915b9d91edad9b5547c
 else: # 2k, explicitely import cPickle
     import cPickle as pickle
     input = raw_input
@@ -687,11 +679,11 @@ class Cluster(dict):
             adjustedRowPos = rowPos - number_of_separators
             if identifier == '_placeholder_':
                 shapeDict = self._HM_calcShapeAndColor(
-                                                        x                    = 0,
-                                                        y                    = adjustedRowPos,
-                                                        ratio                = 0,
-                                                        std                  = 0,
-                                                        number_of_separators = number_of_separators,
+                    x                    = 0,
+                    y                    = adjustedRowPos,
+                    ratio                = 0,
+                    std                  = 0,
+                    number_of_separators = number_of_separators,
                 )
                 shapeDict['x1_separator'] = shapeDict['x0']
                 shapeDict['x2_separator'] = shapeDict['x0'] + ( self[ 'Heat map'][ 'Params' ]['rBox width']  * len( conditions ))
@@ -746,7 +738,8 @@ class Cluster(dict):
 
                 shapeDict['x_text']           = (conPos + 1  ) * self[ 'Heat map'][ 'Params' ]['rBox width'] + self[ 'Heat map'][ 'Params' ]['left border'] + self[ 'Heat map'][ 'Params' ]['text spacing']
                 shapeDict['y_text']           = (adjustedRowPos + 0.77) * self[ 'Heat map'][ 'Params' ]['rBox height'] + self[ 'Heat map'][ 'Params' ]['top border'] + (self[ 'Heat map'][ 'Params' ]['separator width'] * number_of_separators)
-                shapeDict['text']             = '{0} '.format( identifier )
+                shapeDict['text']             = ''
+                shapeDict['text'] += '{0}'.format( identifier )
                 if identifier in additional_labels.keys():
                     shapeDict['text'] +=  ' '.join(additional_labels[ identifier ])
 
