@@ -2629,7 +2629,6 @@ class Cluster(dict):
             conditions = self[ 'Conditions' ]
 
         # print(conditions)
-
         self[ 'Function parameters' ][ self.draw_expression_profiles.__name__ ] = { k : v for k, v in locals().items() if k != 'self' }
         import numpy
         FONT_SIZE = 10
@@ -2688,7 +2687,7 @@ class Cluster(dict):
                 except:
                     print(identifier_index, len( self['Identifiers']))
                     exit(1)
-                for col_index, condition in enumerate( self[ 'Data' ][ identifier ] ):
+                for col_index, condition in enumerate( conditions ):
                     mean, sd = self[ 'Data' ][ identifier ][ condition ]
                     ratios[ row_index ][ col_index ] = mean
                     SDs[ row_index ][ col_index ] = sd
