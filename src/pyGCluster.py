@@ -2628,7 +2628,7 @@ class Cluster(dict):
         if conditions is None:
             conditions = self[ 'Conditions' ]
 
-        print(conditions)
+        # print(conditions)
 
         self[ 'Function parameters' ][ self.draw_expression_profiles.__name__ ] = { k : v for k, v in locals().items() if k != 'self' }
         import numpy
