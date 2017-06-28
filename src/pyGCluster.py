@@ -2612,7 +2612,7 @@ class Cluster(dict):
         grdevices.dev_off()
         return
 
-    def draw_expression_profiles(self, min_value_4_expression_map = None, max_value_4_expression_map = None):
+    def draw_expression_profiles(self, min_value_4_expression_map = None, max_value_4_expression_map = None, conditions=None):
         '''
         Draws an expression profile plot (SVG) for each community, illustrating the main "expression pattern" of a community.
         Each line in this plot represents an object. The "grey cloud" illustrates the range of the standard deviation of the mean values.
@@ -2625,6 +2625,11 @@ class Cluster(dict):
 
         :rtype: none
         '''
+        if conditions is None:
+            conditions = self[ 'Conditions' ]
+
+        print(conditions)
+
         self[ 'Function parameters' ][ self.draw_expression_profiles.__name__ ] = { k : v for k, v in locals().items() if k != 'self' }
         import numpy
         FONT_SIZE = 10
@@ -2651,7 +2656,7 @@ class Cluster(dict):
         startingX = 100
         startingY = 300 + y_offset # determine lenth of y-axis and y-range, represents zero point
         maxY = ( startingY - y_offset ) * 2
-        scalingX = max( [ len( con ) * FONT_SIZE for con in self[ 'Conditions' ] ] ) + 20 # distance between each condition
+        scalingX = max( [ len( con ) * FONT_SIZE for con in conditions ] ) + 20 # distance between each condition
         scalingY = ( maxY - ( startingY - y_offset ) ) / float( MAX_V ) * -1 # has to be negative!
 
         def svg_text(x, y, text):
@@ -2668,12 +2673,12 @@ class Cluster(dict):
             ratios_minus_SD = [ ratio - SDs[ i ] for i, ratio in enumerate( ratios ) ]
             return min( ratios_minus_SD ), max( ratios_plus_SD )
 
-        n_conditions = len( self[ 'Conditions' ] )
+        n_conditions = len( conditions )
         max_level = max( [ name[1] for name in self[ 'Communities' ] ] )
         for cluster in self._get_levelX_clusters( max_level ):
             if len( cluster ) > self[ 'for IO skip clusters bigger than' ]:
                 continue
-            shape = ( len( cluster ), len( self[ 'Conditions' ] ) )
+            shape = ( len( cluster ), len( conditions ) )
             ratios = numpy.zeros( shape )
             SDs = numpy.zeros( shape )
             identifiers = []
@@ -2703,7 +2708,7 @@ class Cluster(dict):
             communityID = self[ 'Communities' ][ ( cluster, max_level ) ][ 'cluster ID' ]
             n_values = len( ratios )
             with open( os.path.join( self[ 'Working directory' ] , 'exProf_{0}-{1}.svg'.format( communityID, max_level ) ), 'w') as fout:
-                width = startingX + scalingX * ( n_conditions -1 ) + len( self[ 'Conditions' ][ -1 ] ) * FONT_SIZE + max( [ len( i ) * FONT_SIZE for i in identifiers ] ) + 10
+                width = startingX + scalingX * ( n_conditions -1 ) + len( conditions[ -1 ] ) * FONT_SIZE + max( [ len( i ) * FONT_SIZE for i in identifiers ] ) + 10
                 s = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" font-size="{2}px" font-family="Verdana" width="{0}" height="{1}">'
                 print( s.format( width, maxY + y_offset + FONT_SIZE, FONT_SIZE ), file = fout )
                 ## draw SD-cloud:
@@ -2776,7 +2781,7 @@ class Cluster(dict):
                 # zero-line:
                 print( svg_line( x1 = 50, y1 = startingY, x2 = startingX + scalingX * ( n_conditions - 1 ), y2 = startingY ), file = fout )
                 # x-axis = conditions:
-                for i, condition in enumerate( self[ 'Conditions' ] ):
+                for i, condition in enumerate( conditions ):
                     _x = startingX + scalingX * i
                     print( svg_text( x= _x + 2, y = maxY + y_offset + FONT_SIZE, text = condition), file = fout )
                     s = '<line x1="{0}" y1="{1}" x2="{2}" y2="{3}" style="stroke-dasharray: 5, 5; stroke:#000000"/>'
