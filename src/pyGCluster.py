@@ -2152,8 +2152,8 @@ class Cluster(dict):
             for cluster in sorted( most_frequent_clusters ):
                 index2obCoFreq = OrderedDict()
                 cFreq, cFreqDict = self.frequencies( cluster = cluster )
-                # for index in cluster:
-                #     index2obCoFreq[ index ] = cFreq
+                for index in cluster:
+                    index2obCoFreq[ index ] = cFreq
                 #     if index > 146:
                 #         print("<")
                 #         exit(1)
