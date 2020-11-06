@@ -1,0 +1,6 @@
+fastcluster==1.1.26
+numpy==1.16.6
+rpy2==2.8.6
+scipy==0.17.1
+singledispatch==3.4.0.3
+six==1.15.0
